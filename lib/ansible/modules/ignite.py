@@ -7,15 +7,15 @@ __metaclass__ = type
 
 DOCUMENTATION = r'''
 ---
-module: my_test
+module: ignite
 
-short_description: This is my test module
+short_description: This module enables interaction with weaveworks ignite.
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
 version_added: "1.0.0"
 
-description: This is my longer description explaining my test module.
+description: This module enables interaction with weaveworks ignite. Ignite is a tool to create ultralight VMs over using Firecracker. It provide a docker like client to handle VMs.
 
 options:
     name:
@@ -34,7 +34,7 @@ extends_documentation_fragment:
     - my_namespace.my_collection.my_doc_fragment_name
 
 author:
-    - Your Name (@yourGitHubHandle)
+    - Jean-Alexis Lauricella (@neith_speed)
 '''
 
 EXAMPLES = r'''
