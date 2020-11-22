@@ -88,8 +88,7 @@ def run_module():
         cpu         =dict(type='int', required=True),
         memory      =dict(type='str', required=True),
         ssh_key     =dict(type='str'),
-        disk_size   =dict(type='str'),
-        new         =dict(type='bool', required=False, default=False)
+        disk_size   =dict(type='str')
     )
 
     # seed the result dict in the object
@@ -129,7 +128,7 @@ def run_module():
 
     # use whatever logic you need to determine whether or not this module
     # made any modifications to your target
-    if module.params['new']:
+    if module.params['name']:
         result['changed'] = True
 
     # during the execution of the module, if there is an exception or a
