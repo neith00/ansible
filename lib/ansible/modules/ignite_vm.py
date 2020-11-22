@@ -1,13 +1,13 @@
 #!/usr/bin/python
 
-# Copyright: (c) 2018, Terry Jones <terry.jones@example.org>
+# Copyright: (c) 2018, Jean-Alexis Lauricella <ja.lauricella@gmail.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
 DOCUMENTATION = r'''
 ---
-module: ignite
+module: ignite_vm
 
 short_description: This module enables interaction with weaveworks ignite.
 
@@ -15,7 +15,7 @@ short_description: This module enables interaction with weaveworks ignite.
 # i.e. the version is of the form "2.5.0" and not "2.4".
 version_added: "1.0.0"
 
-description: This module enables interaction with weaveworks ignite. Ignite is a tool to create ultralight VMs over using Firecracker. It provide a docker like client to handle VMs.
+description: This module enables interaction with weaveworks ignite. Ignite is a tool to create ultralight VMs using Firecracker. It provide a docker like client to handle VMs.
 
 options:
     name:
@@ -68,15 +68,28 @@ message:
     returned: always
     sample: 'goodbye'
 '''
+import os
 
 from ansible.module_utils.basic import AnsibleModule
 
+def _is_ignite_installed(pgm):
+    #Try to guess ignite binary path
+    path=os.getenv('PATH')
+    for p in path.split(os.path.pathsep):
+        p=os.path.join(p,pgm)
+        if os.path.exists(p) and os.access(p,os.X_OK):
+            return p
 
 def run_module():
     # define available arguments/parameters a user can pass to the module
     module_args = dict(
-        name=dict(type='str', required=True),
-        new=dict(type='bool', required=False, default=False)
+        name        =dict(type='str', required=True),
+        image       =dict(type='str', required=True),
+        cpu         =dict(type='int', required=True),
+        memory      =dict(type='str', required=True),
+        ssh_key     =dict(type='str'),
+        disk_size   =dict(type='str'),
+        new         =dict(type='bool', required=False, default=False)
     )
 
     # seed the result dict in the object
@@ -99,6 +112,10 @@ def run_module():
         supports_check_mode=True
     )
 
+    ignite_path = _is_ignite_installed("ignite")
+    if not ignite_path:
+        module.fail_json(msg=("Cannot find ignite binary"),
+                         exception="binary")
     # if the user is working with this module in only check mode we do not
     # want to make any changes to the environment, just return the current
     # state with no modifications
